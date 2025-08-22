@@ -22,7 +22,6 @@ pygame.time.delay(3000)
 def main_menu():
     pygame.display.flip()
     pygame.display.set_caption("Kingdom of Bread - Main Menu")
-    bipoc_img = pygame.image.load('assets\Bipoc_eating_a_can_of_coke.jpg').convert_alpha()
     BG = pygame.image.load("assets/green_mountains.png")
     BG = pygame.transform.scale(BG, (screenWidth, screenHeight))
 

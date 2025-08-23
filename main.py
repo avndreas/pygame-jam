@@ -1,10 +1,11 @@
 import pygame, time, sys
+import mapview
 from button import Button
 
 pygame.init()
 screenInfo = pygame.display.Info()
-screenWidth = screenInfo.current_w / 1.5
-screenHeight = screenInfo.current_h / 1.5
+screenWidth = screenInfo.current_w / 1.6
+screenHeight = screenInfo.current_h / 1.6
 screen = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption("Kingdom of Bread")
 
@@ -15,7 +16,7 @@ pygame.display.flip()
 
 main_font = pygame.font.SysFont("cambria", 50)
 
-pygame.time.delay(3000)
+pygame.time.delay(1000)
 
 
 
@@ -31,7 +32,6 @@ def main_menu():
     delta_time = 0.1
 
     while running:
-        print(time.time())
         # x += 50 * delta_time
         screen.blit(BG, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
@@ -55,18 +55,21 @@ def main_menu():
         delta_time = max(0.001, min(0.1, delta_time))
 
 def play():
+    pygame.display.set_caption("Kingdom of Bread")
     screen.fill("black")
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if play_button.checkForInput(mouse_pos):
-                    play()
-        print("Play")
-        pygame.display.flip()
+    pygame.display.flip()
+    print("Running mapview")
+    mapview.run(screen)
+    # running = True
+    # while running:
+    #     mouse_pos = pygame.mouse.get_pos()
+    #     for event in pygame.event.get():
+    #         if event.type == pygame.QUIT:
+    #             running = False
+    #             sys.exit()
+    #         if event.type == pygame.MOUSEBUTTONDOWN:
+    #             pass
+    #     pygame.display.flip()
     
 
 def options():
@@ -75,7 +78,3 @@ def options():
 main_menu()
 
 pygame.quit()
-
-    
-
-

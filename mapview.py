@@ -22,19 +22,28 @@ def run(screen):
     delta_time = 0.1
     # ----------- Boilerplate above ------------
 
-    bacil = Location()
-    farms = Location()
+    # bacil = Location()
+    # farms = Location()
 
-    bacil = Location("Bacil", Vector2(652, 645), None, None, farms, None)
-    farms = Location("Farms", Vector2(652, 2000), bacil, None, None, None)
+    bacil = Location("Bacil", Vector2(652, 645))
+    farms = Location("Farms", Vector2(652, 2000))
+    temp = Location("Temp", Vector2(1200, 1000))
+    bacil.set_values(south = farms)
+    farms.set_values(north = bacil, east = temp)
+    temp.set_values(west = farms)
 
     locations = [bacil, farms]#, BFERRY, RFERRY, RYE]
-    current_location = bacil
-    destination = bacil
+    #current_location = bacil
+    #destination = bacil
+
+    player = Player(bacil.coordinates.copy(), bacil, bacil)
 
     while running:
+        print("Location: ", player.location.name, player.location.coordinates)
+        #print(player.location.coordinates)
         # x += 50 * delta_time
-        screen.blit(BG, (-(current_location.coordinates[0] - (screenWidth / 2)), -(current_location.coordinates[1] - (screenHeight / 2))))
+        screen.blit(BG, ((screenWidth / 2) - player.get_coordinates()[0], 
+                         (screenHeight / 2) - player.get_coordinates()[1]))
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -43,22 +52,32 @@ def run(screen):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    if player.location.north != None:
+                        player.destination = player.location.north
+                if event.key == pygame.K_d:
+                    if player.location.east != None:
+                        player.destination = player.location.east
                 if event.key == pygame.K_s:
-                    destination = farms
-                    print("Moved to farms")
-        if destination != current_location:
+                    if player.location.south != None:
+                        player.destination = player.location.south
+                if event.key == pygame.K_a:
+                    if player.location.west != None:
+                        player.destination = player.location.west
+        # ------- Movement animation -----------
+        if player.destination != player.location:      
             #vec = [a - b for a, b in zip(list(destination.coordinates), list(current_location.coordinates))]
-            vec = destination.coordinates - current_location.coordinates
+            vec = player.destination.coordinates - player.get_coordinates()
             mag = Vector2.magnitude(vec)
             normvec = Vector2.normalize(vec)
-            if mag < 30:
-                current_location.coordinates = destination.coordinates
-                current_location = destination
+            if mag < 10:
+                player.set_coordinates(player.destination.coordinates)
+                player.location = player.destination
             else:
-                current_location.coordinates += normvec * MAP_SPEED * delta_time
+                player.set_coordinates(player.coordinates + normvec * MAP_SPEED * delta_time)
 
 
-        # --------------- Maintenance stuff below ------------------
+        # --------------- Maintenance stuff ------------------
         for button in []:
             button.changeColour(mouse_pos)
             button.update(screen)
@@ -77,6 +96,11 @@ class Location():
         self.south = south
         self.west = west
     
+    def __eq__(self, other):
+        if not isinstance(other, Location):
+            return False
+        return self.name == other.name and self.coordinates == other.coordinates
+    
     def set_values(self, name = None, coordinates = None, north = None, east = None, south = None, west = None):
         if name != None:
             self.name = name
@@ -91,4 +115,15 @@ class Location():
         if west != None:
             self.west = west
 
+class Player():
+    def __init__(self, coordinates, location, destination):
+        self.coordinates = coordinates
+        self.location = location
+        self.destination = destination
+
+    def get_coordinates(self):
+        return self.coordinates.copy()
+
+    def set_coordinates(self, coordinates):
+        self.coordinates = coordinates.copy() # Important lesson on why you should use setter functions
     

@@ -45,6 +45,8 @@ def run(screen):
         screen.blit(BG, ((screenWidth / 2) - player.get_coordinates()[0], 
                          (screenHeight / 2) - player.get_coordinates()[1]))
         mouse_pos = pygame.mouse.get_pos()
+
+        # Game Loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -52,20 +54,22 @@ def run(screen):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w:
+                if event.key == pygame.K_w and not player.get_moving():
                     if player.location.north != None:
                         player.destination = player.location.north
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_d and not player.get_moving():
                     if player.location.east != None:
                         player.destination = player.location.east
-                if event.key == pygame.K_s:
+                if event.key == pygame.K_s and not player.get_moving():
                     if player.location.south != None:
                         player.destination = player.location.south
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_a and not player.get_moving():
                     if player.location.west != None:
                         player.destination = player.location.west
-        # ------- Movement animation -----------
-        if player.destination != player.location:      
+        
+        # ------- Movement -----------
+        if player.destination != player.location:
+            player.set_moving(True)
             #vec = [a - b for a, b in zip(list(destination.coordinates), list(current_location.coordinates))]
             vec = player.destination.coordinates - player.get_coordinates()
             mag = Vector2.magnitude(vec)
@@ -73,6 +77,7 @@ def run(screen):
             if mag < 10:
                 player.set_coordinates(player.destination.coordinates)
                 player.location = player.destination
+                player.set_moving(False)
             else:
                 player.set_coordinates(player.coordinates + normvec * MAP_SPEED * delta_time)
 
@@ -116,14 +121,21 @@ class Location():
             self.west = west
 
 class Player():
-    def __init__(self, coordinates, location, destination):
+    def __init__(self, coordinates, location, destination, moving = False):
         self.coordinates = coordinates
         self.location = location
         self.destination = destination
+        self.moving = moving
 
     def get_coordinates(self):
         return self.coordinates.copy()
 
     def set_coordinates(self, coordinates):
         self.coordinates = coordinates.copy() # Important lesson on why you should use setter functions
+    
+    def get_moving(self):
+        return self.moving
+    
+    def set_moving(self, moving):
+        self.moving = moving
     

@@ -1,4 +1,4 @@
-import pygame, time, sys, math
+import pygame, time, sys, math, placeview
 from pygame.math import *
 from button import Button
 
@@ -33,14 +33,10 @@ def run(screen):
     temp.set_values(west = farms)
 
     locations = [bacil, farms]#, BFERRY, RFERRY, RYE]
-    #current_location = bacil
-    #destination = bacil
 
     player = Player(bacil.coordinates.copy(), bacil, bacil)
 
     while running:
-        print("Location: ", player.location.name, player.location.coordinates)
-        #print(player.location.coordinates)
         # x += 50 * delta_time
         screen.blit(BG, ((screenWidth / 2) - player.get_coordinates()[0], 
                          (screenHeight / 2) - player.get_coordinates()[1]))
@@ -66,6 +62,10 @@ def run(screen):
                 if event.key == pygame.K_a and not player.get_moving():
                     if player.location.west != None:
                         player.destination = player.location.west
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    sys.exit()
+
         
         # ------- Movement -----------
         if player.destination != player.location:
@@ -80,7 +80,10 @@ def run(screen):
                 player.set_moving(False)
             else:
                 player.set_coordinates(player.coordinates + normvec * MAP_SPEED * delta_time)
-
+        else:
+            if not player.location.cleared:
+                placeview.run(screen, player.location)
+                print("got through!!!")
 
         # --------------- Maintenance stuff ------------------
         for button in []:
@@ -93,20 +96,21 @@ def run(screen):
 
 
 class Location():
-    def __init__(self, name = None, coordinates = None, north = None, east = None, south = None, west = None):
+    def __init__(self, name = None, coordinates = None, north = None, east = None, south = None, west = None, cleared = False):
         self.name = name
         self.coordinates = coordinates
         self.north = north
         self.east = east
         self.south = south
         self.west = west
+        self.cleared = cleared
     
     def __eq__(self, other):
         if not isinstance(other, Location):
             return False
         return self.name == other.name and self.coordinates == other.coordinates
     
-    def set_values(self, name = None, coordinates = None, north = None, east = None, south = None, west = None):
+    def set_values(self, name = None, coordinates = None, north = None, east = None, south = None, west = None, cleared = False):
         if name != None:
             self.name = name
         if coordinates != None:
@@ -119,6 +123,9 @@ class Location():
             self.south = south
         if west != None:
             self.west = west
+        if cleared:
+            self.cleared = False
+
 
 class Player():
     def __init__(self, coordinates, location, destination, moving = False):

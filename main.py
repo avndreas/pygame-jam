@@ -4,8 +4,8 @@ from button import Button
 
 pygame.init()
 screenInfo = pygame.display.Info()
-screenWidth = screenInfo.current_w / 1.6
-screenHeight = screenInfo.current_h / 1.6
+screenWidth = screenInfo.current_w / 1.6 * 1.5
+screenHeight = screenInfo.current_h / 1.9 * 1.5
 screen = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption("Kingdom of Bread")
 
@@ -42,6 +42,10 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.checkForInput(mouse_pos):
                     play()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    sys.exit()
 
 
         play_button = Button(image = pygame.image.load("assets/play_button.png"), pos = (screenWidth / 2, screenHeight / 3 * 2), text_input = "Play", font = main_font, base_colour = "black", hovering_colour = "orange")

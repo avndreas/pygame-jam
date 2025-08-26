@@ -83,7 +83,6 @@ def run(screen):
         else:
             if not player.location.cleared:
                 placeview.run(screen, player.location)
-                print("got through!!!")
 
         # --------------- Maintenance stuff ------------------
         for button in []:

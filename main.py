@@ -16,7 +16,7 @@ pygame.display.flip()
 
 main_font = pygame.font.SysFont("cambria", 50)
 
-pygame.time.delay(1000)
+pygame.time.delay(200)
 
 
 

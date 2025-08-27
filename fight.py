@@ -1,12 +1,13 @@
-import pygame, time, sys, math, placeview
+import pygame, time, sys, math, placeview, json
 from pygame.math import *
 from button import Button
 
+def run(screen, location, fighter):
+    with open("assets/characters.json", "r") as f:
+        data = json.load(f)
+    enemy = data['characters'][fighter]
+    print("Fighting ", enemy['name'])
 
-MAP_SPEED = 1000
-
-
-def run(screen, location):
     pygame.init()
     screenInfo = pygame.display.Info()
     screenWidth = screenInfo.current_w
@@ -29,13 +30,12 @@ def run(screen, location):
     knife_point = Vector2(KNIFE.get_width(), KNIFE.get_height()) + knife_position
 
     velocity = 0
-    max_velocity = 5000
+    max_velocity = 2000
     strength = 50
-
-    # ----------- Boilerplate above ------------
-
     stab_depth = 150
     stab_cooldown = False
+
+    # ----------- Setup above ------------
 
     def stab(knife_position, knife_point):
         stab_cooldown = True
@@ -67,13 +67,15 @@ def run(screen, location):
         #print(knife_point)
 
         if pressed[pygame.K_d] and not pressed[pygame.K_a]:
-            velocity += strength
+            if velocity < max_velocity:
+                velocity += strength
             if velocity < 0:
                 velocity *= 0.8
         elif pressed[pygame.K_a] and not pressed[pygame.K_d]:
+            if velocity > -max_velocity:
+                velocity -= strength
             if velocity > 0:
                 velocity *= 0.8
-            velocity -= strength
         else:
             velocity *= 0.8
             if abs(velocity) < 10:
@@ -96,16 +98,22 @@ def run(screen, location):
                     screen.blit(BG, (0, 0))
                     screen.blit(KNIFE, knife_position)
                     pygame.display.flip()
-                    #pygame.time.delay(70)
                     unstab(knife_position, knife_point)
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     sys.exit()
+
+        # Physics
+        if knife_position.x < 0:
+            knife_position.x = 0
+            velocity = -velocity
+        if knife_point.x > screenWidth:
+            knife_position.x = screenWidth - KNIFE.get_width()
+            velocity = -velocity
 
         # --------------- Maintenance stuff ------------------
         
         pygame.display.flip()
         delta_time = clock.tick(60) / 1000
         delta_time = max(0.001, min(0.1, delta_time))
-
 

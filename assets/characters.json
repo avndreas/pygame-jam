@@ -1,0 +1,46 @@
+{
+    "characters": [
+        {
+            "name": "Trainer",
+            "size": 500,
+            "image": "PLACEHOLDER",
+            "weak_spots": 3,
+            "lines": [
+                {
+                    "plot": [
+                    "Not so fast!",
+                    "One last practice duel!"
+                    ],
+                    "fight_start": [
+                        "Come at me!",
+                        "Move your knife with A and D.",
+                        "Use SPACE to slice my weak points!"
+                    ],
+                    "fight_firsthit": [
+                        "That one was free. Warmup over!"
+                    ],
+                    "fight_damage": [
+                        "OOF",
+                        "Nice!",
+                        "Just like I taught you!"
+                    ],
+                    "fight_win": [
+                        "Good thing that was just a practice knife...",
+                        "I'm confident you'll be able to complete your mission.",
+                        "Good luck!"
+                    ]
+                }
+                
+            ]
+        }
+    ],
+    "locations": [
+        {
+            "name": "Bacil",
+            "people": [
+                "Trainer"
+            ],
+            "fighter": "Trainer"
+        }
+    ]
+}

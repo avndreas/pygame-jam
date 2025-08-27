@@ -43,8 +43,6 @@ def run(screen, location, fighter):
 
     enemy_dimensions = Vector2(ENEMY.get_width(), ENEMY.get_height())
     enemy_position = Vector2((screenWidth / 2), (3 * screenHeight / 4))
-    print("Enemy position: ", enemy_position, 
-          "\nLeft corner: ", enemy_position.x - enemy_dimensions.x / 2)
 
     # Physics setup
     velocity = 0
@@ -93,8 +91,6 @@ def run(screen, location, fighter):
     while running:
         render()
         pressed = pygame.key.get_pressed()
-        #print(knife_point)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -138,13 +134,13 @@ def run(screen, location, fighter):
         if knife_position.x + knife_dimensions.x / 2 > screenWidth:
             knife_position.x = screenWidth - knife_dimensions.x / 2
             velocity = -velocity
-        leftBoundHit = get_bounds(KNIFE, knife_position)[1].x >= get_bounds(ENEMY, enemy_position)[0].x
-        rightBoundHit = get_bounds(KNIFE, knife_position)[0].x <= get_bounds(ENEMY, enemy_position)[1].x
+        leftSideHit = get_bounds(KNIFE, knife_position)[1].x >= get_bounds(ENEMY, enemy_position)[0].x and get_bounds(KNIFE, knife_position)[1].x <= enemy_position.x
+        rightSideHit = get_bounds(KNIFE, knife_position)[0].x <= get_bounds(ENEMY, enemy_position)[1].x and get_bounds(KNIFE, knife_position)[0].x >= enemy_position.x
 
-        if leftBoundHit and rightBoundHit and abs(velocity) <= max_velocity * 3 / 4:
-            if leftBoundHit:
+        if (leftSideHit or rightSideHit) and abs(velocity) <= max_velocity * 3 / 4:
+            if leftSideHit:
                 velocity -= 1000
-            elif rightBoundHit:
+            elif rightSideHit:
                 velocity += 1000
 
         # Update positions     

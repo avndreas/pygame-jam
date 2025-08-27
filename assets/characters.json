@@ -2,8 +2,7 @@
     "characters": [
         {
             "name": "Trainer",
-            "size": 500,
-            "image": "PLACEHOLDER",
+            "image": "assets/rye.png",
             "weak_spots": 3,
             "lines": [
                 {

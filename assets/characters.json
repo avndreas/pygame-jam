@@ -12,11 +12,12 @@
                     ],
                     "fight_start": [
                         "Come at me!",
-                        "Move your knife with A and D.",
-                        "Use SPACE to slice my weak points!"
+                        "Swing your bread knife with A and D.",
+                        "Use SPACE to slice my weak points!",
+                        "Build up speed to get past my defensive crust!"
                     ],
                     "fight_firsthit": [
-                        "That one was free. Warmup over!"
+                        "That one was free. You're toast now."
                     ],
                     "fight_damage": [
                         "OOF",

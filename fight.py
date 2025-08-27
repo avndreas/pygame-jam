@@ -42,7 +42,7 @@ def run(screen, location, fighter):
     knife_point = Vector2(KNIFE.get_width(), KNIFE.get_height()) + knife_position
 
     enemy_dimensions = Vector2(ENEMY.get_width(), ENEMY.get_height())
-    enemy_position = Vector2((screenWidth / 2) - (enemy_dimensions.x / 2), (3 * screenHeight / 4) - (enemy_dimensions.y / 2))
+    enemy_position = Vector2((screenWidth / 2), (3 * screenHeight / 4))
     print("Enemy position: ", enemy_position, 
           "\nLeft corner: ", enemy_position.x - enemy_dimensions.x / 2)
 
@@ -129,8 +129,7 @@ def run(screen, location, fighter):
             velocity *= 0.8
             if abs(velocity) < 10:
                 velocity = 0
-        knife_position.x += velocity * delta_time
-        knife_point = Vector2(KNIFE.get_width(), KNIFE.get_height()) + knife_position
+        
 
         # Collisions
         if knife_position.x - knife_dimensions.x / 2 < 0:
@@ -139,10 +138,18 @@ def run(screen, location, fighter):
         if knife_position.x + knife_dimensions.x / 2 > screenWidth:
             knife_position.x = screenWidth - knife_dimensions.x / 2
             velocity = -velocity
-        if knife_position.x > enemy_position.x - enemy_dimensions.x / 2:
-            if get_bounds(KNIFE, knife_position)[1].x >= get_bounds(ENEMY, enemy_position)[0].x:
-                print("Boom")
+        leftBoundHit = get_bounds(KNIFE, knife_position)[1].x >= get_bounds(ENEMY, enemy_position)[0].x
+        rightBoundHit = get_bounds(KNIFE, knife_position)[0].x <= get_bounds(ENEMY, enemy_position)[1].x
 
+        if leftBoundHit and rightBoundHit and abs(velocity) <= max_velocity * 3 / 4:
+            if leftBoundHit:
+                velocity -= 1000
+            elif rightBoundHit:
+                velocity += 1000
+
+        # Update positions     
+        knife_position.x += velocity * delta_time
+        knife_point = Vector2(KNIFE.get_width(), KNIFE.get_height()) + knife_position
 
         # --------------- Maintenance stuff ------------------
         

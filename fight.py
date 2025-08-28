@@ -29,6 +29,14 @@ def run(screen, location, fighter):
     KNIFE = pygame.image.load("assets/bread_knife.png")
     ENEMY = pygame.image.load(enemy['image'])
 
+    # Physics setup
+    velocity = 0
+    max_velocity = 2000
+    strength = 50
+    stab_depth = 150
+    stab_cooldown = False
+    repulsion_force = 800
+    stab_range = 20 # pixels
 
     # Clock setup
     running = True
@@ -39,19 +47,31 @@ def run(screen, location, fighter):
     # Positioning stage
     knife_dimensions = Vector2(KNIFE.get_width(), KNIFE.get_height())
     knife_position = Vector2(screenWidth / 2 - knife_dimensions.x / 2, screenHeight / 2 - knife_dimensions.y / 2)
-    knife_point = Vector2(KNIFE.get_width(), KNIFE.get_height()) + knife_position
+    knife_point = knife_position + Vector2(0, KNIFE.get_height())
 
     enemy_dimensions = Vector2(ENEMY.get_width(), ENEMY.get_height())
     enemy_position = Vector2((screenWidth / 2), (3 * screenHeight / 4))
+    enemy_weak_spots = [(Vector2(100 * x / enemy['weak_spots'] * (ENEMY.get_width() / 100) - (ENEMY.get_width() / 2) + enemy_position.x  , knife_position.y + (KNIFE.get_height() / 2) + stab_depth))
+                        for x in range(1, enemy['weak_spots'])]
+    print("100 * x / ", enemy['weak_spots'], " + ", enemy_position.x, " - ", (ENEMY.get_width() / 2))
+    for spot in enemy_weak_spots:
+        print("Weak spot at ", spot)
 
-    # Physics setup
-    velocity = 0
-    max_velocity = 2000
-    strength = 50
-    stab_depth = 150
-    stab_cooldown = False
 
     # Functions
+    def check_stab(point):
+        for spot in enemy_weak_spots:
+            if (point - spot).magnitude() <= stab_range:
+                print("Hit at ", spot)
+                enemy_weak_spots.remove(spot)
+                if len(enemy_weak_spots) == 0:
+                    print("Enemy defeated!")
+                    # location.cleared = True
+                    # running = False
+                return True
+            else: 
+                # print("Missed at ", point)
+                return False
     def get_bounds(sprite, position): # This assumes the position is the center of the sprite, it's up to the rest of the code to ensure it's rendered that way
         dimensions = Vector2(sprite.get_width(), sprite.get_height())
         top_left = position - dimensions / 2
@@ -64,6 +84,9 @@ def run(screen, location, fighter):
         screen.blit(BG, (0, 0))
         screen.blit(KNIFE, knife_position - knife_dimensions / 2)
         screen.blit(ENEMY, enemy_position - enemy_dimensions / 2)
+        pygame.draw.circle(screen, (0, 0, 255), knife_point, 10)
+        for spot in enemy_weak_spots:
+            pygame.draw.circle(screen, (255, 0, 0), spot, 10)
         pygame.display.flip()
 
     def stab(knife_position, knife_point):
@@ -74,11 +97,11 @@ def run(screen, location, fighter):
             knife_position.y += 40/x
             x += 1
             render()
-        knife_point.y = knife_position.y + KNIFE.get_height()
+        knife_point.y += stab_depth
         pygame.time.delay(50)
 
     def unstab(knife_position, knife_point):
-        knife_point.y = knife_position.y + KNIFE.get_height()
+        knife_point.y -= stab_depth
         startpos = knife_position.y
         x = 1
         while knife_position.y >= startpos - stab_depth:
@@ -103,7 +126,7 @@ def run(screen, location, fighter):
                     running = False
                 if event.key == pygame.K_SPACE and not stab_cooldown:
                     stab(knife_position, knife_point)
-                    
+                    check_stab(knife_point)
                     unstab(knife_position, knife_point)
                     render()
                     pass
@@ -139,18 +162,16 @@ def run(screen, location, fighter):
 
         if (leftSideHit or rightSideHit) and abs(velocity) <= max_velocity * 3 / 4:
             if leftSideHit:
-                velocity -= 1000
+                velocity -= repulsion_force
             elif rightSideHit:
-                velocity += 1000
+                velocity += repulsion_force
 
         # Update positions     
         knife_position.x += velocity * delta_time
-        knife_point = Vector2(KNIFE.get_width(), KNIFE.get_height()) + knife_position
+        knife_point = knife_position + Vector2(0, KNIFE.get_height()/ 2)
 
         # --------------- Maintenance stuff ------------------
         
         pygame.display.flip()
         delta_time = clock.tick(60) / 1000
         delta_time = max(0.001, min(0.1, delta_time))
-
-

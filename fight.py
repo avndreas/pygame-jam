@@ -31,12 +31,13 @@ def run(screen, location, fighter):
 
     # Physics setup
     velocity = 0
-    max_velocity = 2000
-    strength = 50
+    max_velocity = 1300
+    strength = 40
     stab_depth = 150
     stab_cooldown = False
-    repulsion_force = 800
-    stab_range = 20 # pixels
+    repulsion_force = 1000
+    stab_range = 30 # pixels
+    barrier_speed = max_velocity * 2 / 3
 
     # Clock setup
     running = True
@@ -47,7 +48,7 @@ def run(screen, location, fighter):
     # Positioning stage
     knife_dimensions = Vector2(KNIFE.get_width(), KNIFE.get_height())
     knife_position = Vector2(screenWidth / 2 - knife_dimensions.x / 2, screenHeight / 2 - knife_dimensions.y / 2)
-    knife_point = knife_position + Vector2(0, KNIFE.get_height())
+    knife_point = knife_position + Vector2(15, KNIFE.get_height())
 
     enemy_dimensions = Vector2(ENEMY.get_width(), ENEMY.get_height())
     enemy_position = Vector2((screenWidth / 2), (3 * screenHeight / 4))
@@ -160,7 +161,7 @@ def run(screen, location, fighter):
         leftSideHit = get_bounds(KNIFE, knife_position)[1].x >= get_bounds(ENEMY, enemy_position)[0].x and get_bounds(KNIFE, knife_position)[1].x <= enemy_position.x
         rightSideHit = get_bounds(KNIFE, knife_position)[0].x <= get_bounds(ENEMY, enemy_position)[1].x and get_bounds(KNIFE, knife_position)[0].x >= enemy_position.x
 
-        if (leftSideHit or rightSideHit) and abs(velocity) <= max_velocity * 3 / 4:
+        if (leftSideHit or rightSideHit) and abs(velocity) <= barrier_speed:
             if leftSideHit:
                 velocity -= repulsion_force
             elif rightSideHit:
@@ -168,7 +169,7 @@ def run(screen, location, fighter):
 
         # Update positions     
         knife_position.x += velocity * delta_time
-        knife_point = knife_position + Vector2(0, KNIFE.get_height()/ 2)
+        knife_point = knife_position + Vector2(15, KNIFE.get_height()/ 2)
 
         # --------------- Maintenance stuff ------------------
         

@@ -1,6 +1,7 @@
 import pygame, time, sys, math, placeview
 from pygame.math import *
 from button import Button
+from textbox import TextBox
 
 
 MAP_SPEED = 1000
@@ -37,7 +38,6 @@ def run(screen):
     player = Player(bacil.coordinates.copy(), bacil, bacil)
 
     while running:
-        # x += 50 * delta_time
         screen.blit(BG, ((screenWidth / 2) - player.get_coordinates()[0], 
                          (screenHeight / 2) - player.get_coordinates()[1]))
         mouse_pos = pygame.mouse.get_pos()
@@ -50,21 +50,24 @@ def run(screen):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w and not player.get_moving():
+                if event.key == pygame.K_w and not player.get_moving() and player.location.cleared:
                     if player.location.north != None:
                         player.destination = player.location.north
-                if event.key == pygame.K_d and not player.get_moving():
+                if event.key == pygame.K_d and not player.get_moving() and player.location.cleared:
                     if player.location.east != None:
                         player.destination = player.location.east
-                if event.key == pygame.K_s and not player.get_moving():
+                if event.key == pygame.K_s and not player.get_moving() and player.location.cleared:
                     if player.location.south != None:
                         player.destination = player.location.south
-                if event.key == pygame.K_a and not player.get_moving():
+                if event.key == pygame.K_a and not player.get_moving() and player.location.cleared:
                     if player.location.west != None:
                         player.destination = player.location.west
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     sys.exit()
+                if event.key == pygame.K_RETURN:
+                    if not player.location.cleared:
+                        placeview.run(screen, player.location)
 
         
         # ------- Movement -----------
@@ -74,15 +77,15 @@ def run(screen):
             vec = player.destination.coordinates - player.get_coordinates()
             mag = Vector2.magnitude(vec)
             normvec = Vector2.normalize(vec)
-            if mag < 10:
+            if mag < 10: # Arrived at location
                 player.set_coordinates(player.destination.coordinates)
                 player.location = player.destination
                 player.set_moving(False)
             else:
                 player.set_coordinates(player.coordinates + normvec * MAP_SPEED * delta_time)
-        else:
-            if not player.location.cleared:
-                placeview.run(screen, player.location)
+        else: # At location
+            locationBox = TextBox(Vector2(300, 100), Vector2(screenWidth / 2, screenHeight * 2 / 5), player.location.name, "Test text", "white", "black", pygame.font.SysFont("cambria", 50))
+            locationBox.render(screen)
 
         # --------------- Maintenance stuff ------------------
         for button in []:

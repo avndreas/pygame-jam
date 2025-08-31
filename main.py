@@ -31,6 +31,7 @@ def main_menu():
     clock = pygame.time.Clock()
     delta_time = 0.1
 
+    play_button = Button(image = pygame.image.load("assets/play_button.png"), pos = (screenWidth / 2, screenHeight / 3 * 2), text_input = "Play", font = main_font, base_colour = "black", hovering_colour = "orange")
     while running:
         # x += 50 * delta_time
         screen.blit(BG, (0, 0))
@@ -47,8 +48,6 @@ def main_menu():
                     running = False
                     sys.exit()
 
-
-        play_button = Button(image = pygame.image.load("assets/play_button.png"), pos = (screenWidth / 2, screenHeight / 3 * 2), text_input = "Play", font = main_font, base_colour = "black", hovering_colour = "orange")
 
         for button in [play_button]:
             button.changeColour(mouse_pos)

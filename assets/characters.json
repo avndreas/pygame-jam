@@ -32,6 +32,32 @@
                 }
                 
             ]
+        },
+        {
+            "name": "Ryan",
+            "image":"assets/rye.png",
+            "weak_spots": 2,
+            "lines": [
+                {
+                    "plot": [
+                    "Hhhhhehh.",
+                    "..."
+                    ],
+                    "fight_start": [
+                        "OORAAAAA"
+                    ],
+                    "fight_firsthit": [
+                        "fuh"
+                    ],
+                    "fight_damage": [
+                        "ARRRRRHHHHHHHHHHH"
+                    ],
+                    "fight_win": [
+                        "Phew! You're super strong! I need to train......... HARDER!!!!!!!"
+                    ]
+                }
+                
+            ]
         }
     ],
     "locations": [
@@ -41,6 +67,13 @@
                 "Trainer"
             ],
             "fighter": "Trainer"
+        },
+        {
+            "name": "Farms",
+            "people": [
+                "Ryan"
+            ],
+            "fighter": "Ryan"
         }
     ]
 }

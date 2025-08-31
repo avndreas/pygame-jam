@@ -33,8 +33,9 @@ def run(screen, location, fighter):
     velocity = 0
     max_velocity = 1300
     strength = 40
-    stab_depth = 150
+    stab_depth = 300
     stab_cooldown = False
+    stab_speed = 70
     repulsion_force = 1000
     stab_range = 30 # pixels
     barrier_speed = max_velocity * 2 / 3
@@ -52,8 +53,9 @@ def run(screen, location, fighter):
 
     enemy_dimensions = Vector2(ENEMY.get_width(), ENEMY.get_height())
     enemy_position = Vector2((screenWidth / 2), (3 * screenHeight / 4))
-    enemy_weak_spots = [(Vector2(100 * x / enemy['weak_spots'] * (ENEMY.get_width() / 100) - (ENEMY.get_width() / 2) + enemy_position.x  , knife_position.y + (KNIFE.get_height() / 2) + stab_depth))
-                        for x in range(1, enemy['weak_spots'])]
+    weakpoints = enemy['weak_spots'] + 1
+    enemy_weak_spots = [(Vector2(100 * x / weakpoints * (ENEMY.get_width() / 100) - (ENEMY.get_width() / 2) + enemy_position.x  , knife_position.y + (KNIFE.get_height() / 2) + stab_depth))
+                        for x in range(1, weakpoints)]
     print("100 * x / ", enemy['weak_spots'], " + ", enemy_position.x, " - ", (ENEMY.get_width() / 2))
     for spot in enemy_weak_spots:
         print("Weak spot at ", spot)
@@ -83,8 +85,8 @@ def run(screen, location, fighter):
 
     def render():
         screen.blit(BG, (0, 0))
-        screen.blit(KNIFE, knife_position - knife_dimensions / 2)
         screen.blit(ENEMY, enemy_position - enemy_dimensions / 2)
+        screen.blit(KNIFE, knife_position - knife_dimensions / 2)
         pygame.draw.circle(screen, (0, 0, 255), knife_point, 10)
         for spot in enemy_weak_spots:
             pygame.draw.circle(screen, (255, 0, 0), spot, 10)
@@ -95,7 +97,7 @@ def run(screen, location, fighter):
         startpos = knife_position.y
         x = 1
         while knife_position.y <= startpos + stab_depth:
-            knife_position.y += 40/x
+            knife_position.y += stab_speed/x
             x += 1
             render()
         knife_point.y += stab_depth
@@ -106,7 +108,7 @@ def run(screen, location, fighter):
         startpos = knife_position.y
         x = 1
         while knife_position.y >= startpos - stab_depth:
-            knife_position.y -= 40/x
+            knife_position.y -= stab_speed/x
             x += 1
             render()
         stab_cooldown = False

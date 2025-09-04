@@ -1,4 +1,4 @@
-import pygame, time, sys, math, placeview
+import pygame, time, sys, math, placeview, font
 from pygame.math import *
 from button import Button
 from textbox import TextBox
@@ -14,7 +14,7 @@ def run(screen):
     # screen = pygame.display.set_mode((screenWidth, screenHeight))
     pygame.display.set_caption("Kingdom of Bread")
     pygame.display.flip()
-    main_font = pygame.font.SysFont("cambria", 50)
+    MAIN_FONT = font.MAIN_FONT
     BG = pygame.image.load("assets\map.png")
     # BG = pygame.transform.scale(BG, (screenWidth, screenHeight))
     running = True
@@ -84,7 +84,10 @@ def run(screen):
             else:
                 player.set_coordinates(player.coordinates + normvec * MAP_SPEED * delta_time)
         else: # At location
-            locationBox = TextBox(Vector2(300, 100), Vector2(screenWidth / 2, screenHeight * 2 / 5), player.location.name, "Test text", "white", "black", pygame.font.SysFont("cambria", 50))
+            #locationBox = TextBox(Vector2(300, 100), Vector2(screenWidth / 2, screenHeight * 2 / 5), player.location.name, "Test text", "white", "black", pygame.font.SysFont("cambria", 50))
+            boxDimensions = Vector2(300, 200)
+            locationBox = TextBox(boxDimensions, Vector2(boxDimensions.x, boxDimensions.y - (font.MAIN_FONT_SIZE + 10)), player.location.name, "Test text", "white", "black", pygame.font.SysFont("cambria", 50))
+
             locationBox.render(screen)
 
         # --------------- Maintenance stuff ------------------

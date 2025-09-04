@@ -1,6 +1,7 @@
 import pygame, time, sys
 import mapview
 from button import Button
+from font import *
 
 pygame.init()
 screenInfo = pygame.display.Info()
@@ -14,7 +15,6 @@ BG = pygame.transform.scale(BG, (screenWidth, screenHeight))
 screen.blit(BG, (0, 0))
 pygame.display.flip()
 
-main_font = pygame.font.SysFont("cambria", 50)
 
 pygame.time.delay(200)
 
@@ -31,9 +31,8 @@ def main_menu():
     clock = pygame.time.Clock()
     delta_time = 0.1
 
-    play_button = Button(image = pygame.image.load("assets/play_button.png"), pos = (screenWidth / 2, screenHeight / 3 * 2), text_input = "Play", font = main_font, base_colour = "black", hovering_colour = "orange")
+    play_button = Button(image = pygame.image.load("assets/play_button.png"), pos = (screenWidth / 2, screenHeight / 3 * 2), text_input = "Play", font = font.MAIN_FONT, base_colour = "black", hovering_colour = "orange")
     while running:
-        # x += 50 * delta_time
         screen.blit(BG, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
